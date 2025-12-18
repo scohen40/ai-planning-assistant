@@ -45,7 +45,183 @@ ai_planning_assistant/
 - **ID-Based Tracking**: Unique IDs for all items, preserved across regenerations
 - **Merge Functionality**: Add new brain dumps to existing task trees without losing progress
 
-## Setup Instructions
+## Quick Start Guide
+
+Follow these steps to run the AI Planning Assistant on your local machine.
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/scohen40/ai-planning-assistant.git
+cd ai-planning-assistant
+```
+
+### Step 2: Get Your API Keys
+
+Before setting up the backend, you'll need at least one AI provider API key:
+
+**Option A: OpenAI (Recommended for beginners)**
+1. Go to https://platform.openai.com/api-keys
+2. Sign up or log in
+3. Click "Create new secret key"
+4. Copy the key (starts with `sk-proj-...`)
+5. **Important:** Save it somewhere safe - you won't be able to see it again!
+
+**Option B: Google Gemini (Free tier available)**
+1. Go to https://aistudio.google.com/app/apikey
+2. Sign in with your Google account
+3. Click "Create API key"
+4. Copy the key (starts with `AIza...`)
+
+### Step 3: Set Up the Backend
+
+1. **Navigate to the backend folder:**
+   ```bash
+   cd backend
+   ```
+
+2. **Create a Python virtual environment:**
+   ```bash
+   python3 -m venv venv
+   ```
+
+3. **Activate the virtual environment:**
+   
+   On Mac/Linux:
+   ```bash
+   source venv/bin/activate
+   ```
+   
+   On Windows:
+   ```bash
+   venv\Scripts\activate
+   ```
+   
+   You should see `(venv)` appear in your terminal prompt.
+
+4. **Install Python dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   
+   This will take a minute or two.
+
+5. **Create your environment file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+6. **Add your API key to the .env file:**
+   
+   Open the `.env` file in a text editor and replace the placeholder with your actual API key:
+   
+   **If using OpenAI:**
+   ```bash
+   # AI Provider Selection (openai or gemini)
+   AI_PROVIDER=openai
+   
+   # Model Selection
+   OPENAI_MODEL=gpt-4o-mini
+   OPENAI_API_KEY=sk-proj-YOUR_ACTUAL_KEY_HERE
+   ```
+   
+   **If using Gemini:**
+   ```bash
+   # AI Provider Selection (openai or gemini)
+   AI_PROVIDER=gemini
+   
+   # Model Selection
+   GEMINI_MODEL=gemini-2.5-flash
+   GEMINI_API_KEY=AIzaYOUR_ACTUAL_KEY_HERE
+   ```
+   
+   Save the file and close it.
+
+7. **Start the backend server:**
+   ```bash
+   python3 -m uvicorn main:app --reload --port 8000
+   ```
+   
+   You should see output like:
+   ```
+   INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+   INFO:     Started reloader process
+   INFO:     Started server process
+   INFO:     Waiting for application startup.
+   INFO:     Application startup complete.
+   ```
+   
+   **Keep this terminal window open!** The backend needs to keep running.
+
+### Step 4: Set Up the Frontend
+
+1. **Open a NEW terminal window** (keep the backend running in the other one)
+
+2. **Navigate to the frontend folder:**
+   ```bash
+   cd frontend  # If you're in the ai_planning_assistant root
+   # OR
+   cd ../frontend  # If you're still in the backend folder
+   ```
+
+3. **Start the frontend server:**
+   ```bash
+   python3 -m http.server 8080
+   ```
+   
+   You should see:
+   ```
+   Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
+   ```
+
+### Step 5: Open the App
+
+1. Open your web browser
+2. Go to: **http://localhost:8080**
+3. You should see the AI Planning Assistant interface!
+
+### Step 6: Test It Out
+
+1. Type something in the brain dump area, like:
+   ```
+   Learn Python
+   Build a website
+   Clean my room
+   Study for exam
+   ```
+
+2. Click "Generate Task Tree"
+
+3. Wait a few seconds while the AI organizes your tasks
+
+4. You should see your tasks organized into a hierarchical tree!
+
+### Stopping the App
+
+When you're done:
+1. Press `Ctrl+C` in both terminal windows to stop the servers
+2. Type `deactivate` in the backend terminal to exit the Python virtual environment
+
+### Next Time You Want to Run It
+
+1. **Terminal 1 (Backend):**
+   ```bash
+   cd backend
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   python3 -m uvicorn main:app --reload --port 8000
+   ```
+
+2. **Terminal 2 (Frontend):**
+   ```bash
+   cd frontend
+   python3 -m http.server 8080
+   ```
+
+3. **Browser:** Go to http://localhost:8080
+
+---
+
+## Detailed Setup Instructions
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -185,13 +361,20 @@ OPENAI_MODEL=gpt-4o-mini
 ```
 
 ### Google Gemini
+
+Available models (as of December 2025):
+- `gemini-2.5-flash` - Latest stable, fast & versatile (Recommended)
+- `gemini-2.5-pro` - Higher quality, slower
+- `gemini-3-pro-preview` - Preview of next generation
+- `gemini-flash-latest` - Always uses the latest Flash model
+
 ```bash
 AI_PROVIDER=gemini
 GEMINI_API_KEY=AIza...
-GEMINI_MODEL=gemini-2.0-flash-exp
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
-**Note**: Gemini 2.0 Flash Experimental has strict rate limits on the free tier. The system will automatically fall back to Gemini 1.5 Flash if rate limits are hit.
+**Note:** Free tier has rate limits. Paid Tier 1 API keys have much higher limits (1,000 RPM, 4M TPM).
 
 ## API Endpoints
 
@@ -265,7 +448,7 @@ GEMINI_MODEL=gemini-2.0-flash-exp
 
 ### AI Providers
 - **OpenAI GPT-4o-mini** - Fast, cost-effective, reliable
-- **Google Gemini 2.0 Flash** - Experimental, cutting-edge features
+- **Google Gemini (2.5 Flash, 2.5 Pro, 3 Pro Preview)** - Latest generation models
 - **LangSmith** - Optional AI tracing and monitoring
 
 ## Development
@@ -321,11 +504,29 @@ This is an actively developed personal planning tool. Recent additions include:
 
 **"Failed to generate task tree: API error: 500"**
 - Check that your API key is correctly set in `backend/.env`
-- Verify the backend server is running (`http://localhost:8000/health`)
-- For Gemini: Rate limits on free tier are very low - switch to OpenAI or wait
+- Verify the backend server is running by visiting http://localhost:8000/health in your browser
+- Make sure you've activated the virtual environment (`source venv/bin/activate`)
+- For Gemini: If using free tier, rate limits are very strict - switch to OpenAI or wait a few minutes
+- Check the terminal where the backend is running for detailed error messages
+
+**"Could not parse response content as the length limit was reached"**
+- Your brain dump is too large for the token limit
+- Try breaking it into smaller chunks or reducing the amount of text
+- The limit has been increased to 16,000 tokens for OpenAI and 30,000 for Gemini
+
+**Backend won't start / "ModuleNotFoundError"**
+- Make sure you activated the virtual environment: `source venv/bin/activate`
+- Make sure you installed dependencies: `pip install -r requirements.txt`
+- Make sure you're in the `backend` directory when running uvicorn
+
+**Frontend shows blank page**
+- Make sure you're accessing http://localhost:8080 (not opening the HTML file directly)
+- Check that both frontend AND backend servers are running
+- Check browser console for errors (F12 → Console tab)
 
 **"CORS Error" in browser console**
-- Ensure the frontend is served via HTTP server (not `file://`)
+- Make sure the backend is running on port 8000
+- Make sure the frontend is served via HTTP server (not file://)
 - Backend CORS is configured for all origins in development
 
 **Voice input not working**
