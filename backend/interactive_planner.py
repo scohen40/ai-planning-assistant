@@ -8,16 +8,27 @@ import uuid
 from typing import List, Literal, Dict, Any, Optional
 from pydantic import BaseModel, Field
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langsmith import traceable
 
 # Initialize LLM
 def get_llm():
-    """Get configured LLM instance."""
-    return ChatOpenAI(
-        model=os.getenv("OPENAI_MODEL", "gpt-4.1"),
-        temperature=0.2,
-        max_tokens=10000,  # Increased to handle longer outputs
-    )
+    """Get configured LLM instance based on AI_PROVIDER environment variable."""
+    provider = os.getenv('AI_PROVIDER', 'openai')
+    
+    if provider == 'gemini':
+        return ChatGoogleGenerativeAI(
+            model=os.getenv('GEMINI_MODEL', 'gemini-2.0-flash-exp'),
+            temperature=0.2,
+            max_tokens=10000,
+            google_api_key=os.getenv('GEMINI_API_KEY')
+        )
+    else:  # default to openai
+        return ChatOpenAI(
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            temperature=0.2,
+            max_tokens=10000,
+        )
 
 # Pydantic Models for Task Tree
 class Subtask(BaseModel):

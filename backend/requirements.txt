@@ -13,6 +13,7 @@ Pillow>=12.0.0
 # LangChain ecosystem - install these first
 langchain-core>=0.2.0
 langchain-openai>=0.1.0
+langchain-google-genai>=0.1.0
 langgraph>=0.1.0
 langchain>=0.2.0
 langsmith>=0.1.0
