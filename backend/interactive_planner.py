@@ -20,14 +20,17 @@ def get_llm():
         return ChatGoogleGenerativeAI(
             model=os.getenv('GEMINI_MODEL', 'gemini-2.0-flash-exp'),
             temperature=0.2,
-            max_tokens=10000,
-            google_api_key=os.getenv('GEMINI_API_KEY')
+            max_output_tokens=30000,  # Increased for large brain dumps
+            google_api_key=os.getenv('GEMINI_API_KEY'),
+            timeout=120,  # 2 minute timeout
+            max_retries=2
         )
     else:  # default to openai
         return ChatOpenAI(
             model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
             temperature=0.2,
-            max_tokens=10000,
+            max_tokens=16000,  # Increased from 10000 (gpt-4o-mini max is 16384)
+            timeout=120
         )
 
 # Pydantic Models for Task Tree
