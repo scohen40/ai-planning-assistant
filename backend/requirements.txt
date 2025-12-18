@@ -1,0 +1,23 @@
+# Core FastAPI
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
+python-dotenv>=1.0.0
+python-multipart>=0.0.6
+
+# AI Providers
+openai>=1.10.0
+google-generativeai>=0.3.2
+Pillow>=12.0.0
+
+# LangChain ecosystem - install these first
+langchain-core>=0.2.0
+langchain-openai>=0.1.0
+langgraph>=0.1.0
+langchain>=0.2.0
+langsmith>=0.1.0
+# anthropic==0.18.0
+
+# Optional dependencies
+# sqlalchemy==2.0.25  # For database support
+# redis==5.0.1  # For caching

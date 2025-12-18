@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Planning Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="images/logo2.png" alt="AI Planning Assistant" class="logo">
+            <h1 class="title">AI Planning Assistant</h1>
+            <p class="subtitle">Let AI help you organize the chaos in your brain</p>
+        </header>
+
+        <main>
+            <section class="planning-section">
+                <div class="input-area">
+                    <h2 style="margin-bottom: 15px;">Add your brain dumps below (type, speak, and upload written):</h2>
+                    
+                    <div id="brainDumpsContainer">
+                        <!-- Brain dumps will be added here dynamically -->
+                        <button id="addBrainDumpBtn" class="secondary-btn" style="margin-top: 10px;">+ Add Another Brain Dump</button>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <label for="fileUpload" class="secondary-btn" style="display: inline-block; cursor: pointer;">
+                            📎 Upload Text/Word Files
+                        </label>
+                        <input type="file" id="fileUpload" accept=".txt,.doc,.docx" multiple style="display: none;">
+                        <div id="uploadedFilesContainer" style="margin-top: 10px;"></div>
+                    </div>
+                    
+                    <div class="context-section">
+                        <label for="contextInput">
+                            <input type="checkbox" id="addContext"> Add additional context
+                        </label>
+                        <textarea 
+                            id="contextInput" 
+                            placeholder="Any additional details, constraints, or preferences..."
+                            rows="3"
+                            style="display: none;"
+                        ></textarea>
+                    </div>
+
+                    <button id="generateBtn" class="primary-btn">
+                        Generate Task Tree
+                    </button>
+                </div>
+                <br><br>
+                <div class="output-area" id="outputArea" style="display: none;">
+                    <h2>Your AI-Generated Task Tree</h2>
+                    <div id="planOutput" class="plan-content"></div>
+                    
+                    <div class="tasks-section hidden">
+                        <h3>Extracted Tasks</h3>
+                        <ul id="tasksList"></ul>
+                    </div>
+
+                    <div class="actions">
+                        <button id="newPlanBtn" class="secondary-btn">Create New Plan</button>
+                        <button id="exportBtn" class="secondary-btn">Export Plan</button>
+                    </div>
+                </div>
+
+                <div class="loading" id="loadingSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Generating your plan...</p>
+                </div>
+            </section>
+
+            <section class="saved-tasks-section">
+                <h2>My Task Tree</h2>
+                <div id="savedTasks">
+                    <p class="empty-state">No tasks yet. Generate a plan to get started!</p>
+                </div>
+                
+                <h2 style="margin-top: 30px;">My To Do Lists</h2>
+                <div id="savedToDoLists">
+                    <p class="empty-state">No to-do lists yet.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- To-Do List Modal -->
+    <div id="todoModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Generate To-Do List</h2>
+            <p style="margin-bottom: 20px;">Choose how to create your to-do list:</p>
+            
+            <div class="modal-options">
+                <button id="aiGenerateTodoBtn" class="primary-btn" style="width: 100%; margin-bottom: 15px;">
+                    🤖 Have AI Generate a To-Do List
+                </button>
+                <button id="manualSelectTodoBtn" class="secondary-btn" style="width: 100%;">
+                    ✓ Manually Select Items
+                </button>
+            </div>
+            
+            <div id="manualSelectionContainer" style="display: none; margin-top: 20px;">
+                <h3>Select Items for Your To-Do List:</h3>
+                <div id="taskSelectionList" style="max-height: 400px; overflow-y: auto; margin: 15px 0;"></div>
+                <input type="text" id="todoListName" placeholder="To-Do List Name" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <button id="createManualTodoBtn" class="primary-btn" style="width: 100%;">Create To-Do List</button>
+            </div>
+            
+            <div id="aiGenerationContainer" style="display: none; margin-top: 20px;">
+                <h3>AI-Generated To-Do List Options:</h3>
+                <textarea id="aiTodoPrompt" placeholder="Optional: Add specific instructions for the AI (e.g., 'prioritize by deadline', 'group by category', 'today's tasks only')" rows="3" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                <input type="text" id="aiTodoListName" placeholder="To-Do List Name" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <button id="generateAiTodoBtn" class="primary-btn" style="width: 100%;">Generate with AI</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Tree View Modal -->
+    <div id="viewTaskTreeModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 900px; max-height: 80vh; overflow-y: auto;">
+            <span class="close-modal" onclick="closeViewTaskTreeModal()">&times;</span>
+            <h2>Task Tree</h2>
+            <div id="viewTaskTreeContent" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- To-Do List View Modal -->
+    <div id="viewTodoListModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 700px; max-height: 80vh; overflow-y: auto;">
+            <span class="close-modal" onclick="closeTodoListViewModal()">&times;</span>
+            <h2 id="todoListViewTitle"></h2>
+            <p id="todoListViewMeta" style="color: #666; font-size: 14px; margin-bottom: 20px;"></p>
+            <div id="todoListViewContent" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
