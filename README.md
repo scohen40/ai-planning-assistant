@@ -36,7 +36,7 @@ ai_planning_assistant/
 - 🔧 **JSON Editor** - Advanced editing with direct JSON manipulation
 - 💾 **Local Storage** - Save task trees and to-do lists in your browser
 - 📤 **Export** - Download task trees as formatted text files
-- 🔌 **Multi-Provider AI** - Support for OpenAI (GPT-4o-mini) and Google Gemini (2.0 Flash)
+- 🔌 **Multi-Provider AI** - Support for OpenAI (GPT-4o-mini) and Google Gemini (3.0 Pro Preview)
 
 ### Unique Capabilities
 - **Hierarchical Organization**: Category → Project → Task → Subtask structure
